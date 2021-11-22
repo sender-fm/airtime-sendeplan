@@ -44,7 +44,7 @@
     var app = new Vue({
         el: '#app',
         props: {
-            airtimeChannel: {
+            airtimechannel: {
                 type: String,
                 default: ''
             }
@@ -72,12 +72,12 @@
                 ],
                 filters: '',
                 innerHtml: '',
-                url: this.airtimeChannel === '' ? 'https://senderfm.airtime.pro/api/week-info' : this.airtimeChannel,
+                url: this.airtimechannel === '' ? 'https://senderfm.airtime.pro/api/week-info' : this.airtimechannel,
             }
         },      
         mounted () {
             this.airtimebot()
-            if(this.airtimeChannel !== '') { alert("channel ist übergeben => " + this.airtimeChannel) }
+            if(this.airtimechannel !== '') { alert("channel ist übergeben => " + this.airtimechannel) }
         },
         methods: {
             async airtimebot() {
