@@ -43,6 +43,12 @@
  
     var app = new Vue({
         el: '#app',
+        props: {
+            airtimeChannel: {
+                type: String,
+                default: ''
+            }
+        },
         data() {
             return {
                 message: 'sender.fm - Sendeplan',
@@ -65,15 +71,17 @@
                     }}
                 ],
                 filters: '',
-                innerHtml: ''               
+                innerHtml: '',
+                url: this.airtimeChannel === '' ? 'https://senderfm.airtime.pro/api/week-info' : this.airtimeChannel,
             }
         },      
         mounted () {
             this.airtimebot()
+            if(this.airtimeChannel !== '') { console.log("channel ist übergeben ", this.airtimeChannel) }
         },
         methods: {
             async airtimebot() {
-                axios.get('https://senderfm.airtime.pro/api/week-info').then(response => {
+                axios.get(this.url).then(response => {
                     this.json = response.data;
                     const l = Object.keys(this.json).length
               
