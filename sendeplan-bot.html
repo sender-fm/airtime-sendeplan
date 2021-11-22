@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta charset="UTF-8">
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+    <meta name="description" content="Sendeplan und Sendeungen des online Radios sender.fm">
+    <meta name="keywords" content="Sendeplan, Sendungen, Onlineradio, radio, Wien, Österreich, online, Internetradio">
+    <meta name="author" content="Alexander Friedland, sender.fm">
+    <base href="https://sender.fm" target="_blank">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script>
+   
+    <!-- CSS only -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+    <link type="text/css" rel="stylesheet" href="https://unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue.min.css"/>
+    <!-- JavaScript Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
+    <script src="https://unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue.min.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+    <script src="https://momentjs.com/downloads/moment.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.14.1/locale/de.js"></script>
+
+ 
+ 
+</head>
+  <title>Sendeplan - Sender.fm</title>
+<body>
+    <div id="app" class="container">
+        <h2>{{ message }}</h2> 
+        <hr />
+        <label>Sendeplan durchsuchen</label>
+        <b-input v-model="filters" placeholder="suche"></b-input>
+        <b-table striped hover responsive stacked="lg" :items="tableItemSendungen" :fields="fields" :filter="filters">
+            
+        </b-table>
+      </div>
+</body>
+<script>
+   
+ 
+    var app = new Vue({
+        el: '#app',
+        data() {
+            return {
+                message: 'sender.fm - Sendeplan',
+                json: null,
+                tableItemDays: [],
+                tableItemSendungen: [],
+                fields: [
+                    { key: 'zeit', label: 'zeit', thStyle: { width: "10%" }, formatter: (value, key, item) => {
+                    const date = moment(item.start_timestamp).locale('de').format('ll')
+                        return date; 
+                    }},
+                    { key:'start_timestamp', label: 'start', thStyle: { width: "10%" }, formatter: (value, key, item) => {
+                        const time = moment(item.start_timestamp).locale('de').format('LT')
+                        return time + 'Uhr'; 
+                    }},
+                    { key:'name', label: 'Sendung', thStyle: { width: "20%" }},
+                    { key:'description', label: 'Beschreibung', thStyle: { width: "60%" }, formatter: (cell, row, item)=> {
+                        // return item.description = item.description.replace(/(https?:\/\/[^\s]+)/g, '<a href="sasda">asdasd</a>');  
+                         return item.description   
+                    }}
+                ],
+                filters: '',
+                innerHtml: ''               
+            }
+        },      
+        mounted () {
+            this.airtimebot()
+        },
+        methods: {
+            async airtimebot() {
+                axios.get('http://senderfm.airtime.pro/api/week-info').then(response => {
+                    this.json = response.data;
+                    const l = Object.keys(this.json).length
+              
+                    for (var i = 0; i < l; i++) {
+                        var day =  Object.keys(this.json)[i]
+                        var array =this.json[day]
+                        var ll = array.length                    
+                        if (Object.keys(this.json)[i] !=  'AIRTIME_API_VERSION') {
+                            for (var ii = 0; ii < ll; ii++) {                         
+                                this.tableItemSendungen.push(array[ii])
+                            }
+                        }
+                    
+                    }
+                })
+            }            
+        },
+})
+</script>
+</html>
