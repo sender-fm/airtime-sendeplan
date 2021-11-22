@@ -73,7 +73,7 @@
         },
         methods: {
             async airtimebot() {
-                axios.get('http://senderfm.airtime.pro/api/week-info').then(response => {
+                axios.get('https://senderfm.airtime.pro/api/week-info').then(response => {
                     this.json = response.data;
                     const l = Object.keys(this.json).length
               
