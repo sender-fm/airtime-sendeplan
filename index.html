@@ -23,7 +23,13 @@
     <script src="https://momentjs.com/downloads/moment.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.14.1/locale/de.js"></script>
 
- 
+    <script src="https://cdn.jsdelivr.net/npm/vue-scrollto"></script>
+
+ <style>
+     .redrow {
+         background-color:#ffc107;
+     }
+ </style>
  
 </head>
   <title>Sendeplan - Sender.fm</title>
@@ -33,19 +39,34 @@
         <hr />
         <label>Sendeplan durchsuchen</label>
         <b-input v-model="filters" placeholder="suche"></b-input>
-        <b-table striped hover responsive stacked="lg" :items="tableItemSendungen" :fields="fields" :filter="filters">
-            
+        <b-table 
+            :items="tableItemSendungen" 
+            :fields="fields" 
+            :filter="filters" 
+            striped 
+            hover 
+            responsive 
+            stacked="lg"
+            >
+            <template #cell(zeit)="data">
+                 <span :id="this.moment(data.item.start_timestamp).format('DDMMYYYYHHmmss')">{{  this.moment(data.item.start_timestamp).locale('de').format('ll')}}</span>
+              </template>
         </b-table>
       </div>
 </body>
-<script>
-   
- 
+<script>  
     var app = new Vue({
         el: '#app',
+        props: {
+            airtimechannel: {
+                type: String,
+                default: ''
+            }
+        },
         data() {
             return {
                 message: 'sender.fm - Sendeplan',
+                url: this.airtimechannel === '' ? 'https://senderfm.airtime.pro/api/week-info' : this.airtimechannel,
                 json: null,
                 tableItemDays: [],
                 tableItemSendungen: [],
@@ -65,15 +86,17 @@
                     }}
                 ],
                 filters: '',
-                innerHtml: ''               
+                innerHtml: '',
             }
         },      
         mounted () {
             this.airtimebot()
+            if(this.airtimechannel !== '') { alert("channel ist übergeben => " + this.airtimechannel) }
+            
         },
         methods: {
             async airtimebot() {
-                axios.get('https://senderfm.airtime.pro/api/week-info').then(response => {
+                axios.get(this.url).then(response => {
                     this.json = response.data;
                     const l = Object.keys(this.json).length
               
@@ -86,7 +109,21 @@
                                 this.tableItemSendungen.push(array[ii])
                             }
                         }
-                    
+                      
+                        if (i == l-1 ) {
+                            $( "tr" ).removeClass('redrow');
+                             if ( $('#'+moment().format('DDMMYYYYHH0000')).text() == undefined ) {
+                                setTimeout(function(){
+                                   document.getElementById(''+moment().subtract(1, "hour").format('DDMMYYYYHH0000')+'').scrollIntoView()
+                                   $('#'+moment().subtract(1, "hour").format('DDMMYYYYHH0000')+'').parent().parent().parent().addClass('redrow')
+                                }, 1000);
+                            } else {
+                               setTimeout(function(){                               
+                                  document.getElementById(''+moment().format('DDMMYYYYHH0000')+'').scrollIntoView()
+                                  $('#'+moment().format('DDMMYYYYHH0000')+'').parent().parent().parent().addClass('redrow')
+                               }, 1000);
+                            }
+                        }
                     }
                 })
             }            
