@@ -22,19 +22,15 @@
 
     <script src="https://momentjs.com/downloads/moment.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.14.1/locale/de.js"></script>
-
-    <script src="https://cdn.jsdelivr.net/npm/vue-scrollto"></script>
-
  <style>
      .redrow {
          background-color:#ffc107;
      }
  </style>
- 
 </head>
   <title>Sendeplan - Sender.fm</title>
 <body>
-    <div id="app" class="container">
+    <div id="app" >
         <h2>{{ message }}</h2> 
         <hr />
         <label>Sendeplan durchsuchen</label>
@@ -46,7 +42,7 @@
             striped 
             hover 
             responsive 
-            stacked="lg"
+            stacked="sm"
             >
             <template #cell(zeit)="data">
                  <span :id="this.moment(data.item.start_timestamp).format('DDMMYYYYHHmmss')">{{  this.moment(data.item.start_timestamp).locale('de').format('ll')}}</span>
@@ -71,13 +67,13 @@
                 tableItemDays: [],
                 tableItemSendungen: [],
                 fields: [
-                    { key: 'zeit', label: 'zeit', thStyle: { width: "10%" }, formatter: (value, key, item) => {
+                    { key: 'zeit', label: 'Datum', thStyle: { width: "10%" }, formatter: (value, key, item) => {
                     const date = moment(item.start_timestamp).locale('de').format('ll')
                         return date; 
                     }},
-                    { key:'start_timestamp', label: 'start', thStyle: { width: "10%" }, formatter: (value, key, item) => {
+                    { key:'start_timestamp', label: 'Zeit', thStyle: { width: "10%" }, formatter: (value, key, item) => {
                         const time = moment(item.start_timestamp).locale('de').format('LT')
-                        return time + 'Uhr'; 
+                        return time + ' Uhr'; 
                     }},
                     { key:'name', label: 'Sendung', thStyle: { width: "20%" }},
                     { key:'description', label: 'Beschreibung', thStyle: { width: "60%" }, formatter: (cell, row, item)=> {
@@ -91,8 +87,7 @@
         },      
         mounted () {
             this.airtimebot()
-            if(this.airtimechannel !== '') { alert("channel ist übergeben => " + this.airtimechannel) }
-            
+            if(this.airtimechannel !== '') { alert("channel ist übergeben => " + this.airtimechannel) }            
         },
         methods: {
             async airtimebot() {
@@ -109,12 +104,12 @@
                                 this.tableItemSendungen.push(array[ii])
                             }
                         }
-                      
+                      console.log(i == l-1)
                         if (i == l-1 ) {
                             $( "tr" ).removeClass('redrow');
-                             if ( $('#'+moment().format('DDMMYYYYHH0000')).text() == undefined ) {
+                             if ( !$('#'+moment().format('DDMMYYYYHH0000')).text() ) {
                                 setTimeout(function(){
-                                   document.getElementById(''+moment().subtract(1, "hour").format('DDMMYYYYHH0000')+'').scrollIntoView()
+                                   document.getElementById(moment().subtract(1, "hour").format('DDMMYYYYHH0000')).scrollIntoView()
                                    $('#'+moment().subtract(1, "hour").format('DDMMYYYYHH0000')+'').parent().parent().parent().addClass('redrow')
                                 }, 1000);
                             } else {
@@ -124,6 +119,7 @@
                                }, 1000);
                             }
                         }
+                        console.log( $('#'+moment().format('DDMMYYYYHH0000')).text())
                     }
                 })
             }            
