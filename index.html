@@ -104,22 +104,18 @@
                                 this.tableItemSendungen.push(array[ii])
                             }
                         }
-                      console.log(i == l-1)
                         if (i == l-1 ) {
                             $( "tr" ).removeClass('redrow');
+                            setTimeout(function(){
                              if ( !$('#'+moment().format('DDMMYYYYHH0000')).text() ) {
-                                setTimeout(function(){
                                    document.getElementById(moment().subtract(1, "hour").format('DDMMYYYYHH0000')).scrollIntoView()
                                    $('#'+moment().subtract(1, "hour").format('DDMMYYYYHH0000')+'').parent().parent().parent().addClass('redrow')
-                                }, 1000);
-                            } else {
-                               setTimeout(function(){                               
+                            } else {          
                                   document.getElementById(''+moment().format('DDMMYYYYHH0000')+'').scrollIntoView()
                                   $('#'+moment().format('DDMMYYYYHH0000')+'').parent().parent().parent().addClass('redrow')
-                               }, 1000);
                             }
+                        }, 1000);
                         }
-                        console.log( $('#'+moment().format('DDMMYYYYHH0000')).text())
                     }
                 })
             }            
