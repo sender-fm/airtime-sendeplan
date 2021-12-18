@@ -30,7 +30,7 @@
 </head>
   <title>Sendeplan - Sender.fm</title>
 <body>
-    <div id="app" >       
+    <div id="app" >
         <br />
         <br />
         <label>Sendeplan durchsuchen</label>
@@ -62,7 +62,6 @@
         },
         data() {
             return {
-                message: 'sender.fm - Sendeplan',
                 url: this.airtimechannel === '' ? 'https://senderfm.airtime.pro/api/week-info' : this.airtimechannel,
                 json: null,
                 tableItemDays: [],
