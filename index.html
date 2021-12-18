@@ -100,18 +100,19 @@
                         var array =this.json[day]
                         var ll = array.length                    
                         if (Object.keys(this.json)[i] !=  'AIRTIME_API_VERSION') {
-                            for (var ii = 0; ii < ll; ii++) {                         
-                                this.tableItemSendungen.push(array[ii])
+                            for (var ii = 0; ii < ll; ii++) {      
+                               if ( moment() < moment(array[ii].end_timestamp) ) {
+                                    this.tableItemSendungen.push(array[ii])
+                                }         
+                                
                             }
                         }
                         if (i == l-1 ) {
                             $( "tr" ).removeClass('redrow');
                             setTimeout(function(){
                              if ( !$('#'+moment().format('DDMMYYYYHH0000')).text() ) {
-                                   document.getElementById(moment().subtract(1, "hour").format('DDMMYYYYHH0000')).scrollIntoView()
                                    $('#'+moment().subtract(1, "hour").format('DDMMYYYYHH0000')+'').parent().parent().parent().addClass('redrow')
                             } else {          
-                                  document.getElementById(''+moment().format('DDMMYYYYHH0000')+'').scrollIntoView()
                                   $('#'+moment().format('DDMMYYYYHH0000')+'').parent().parent().parent().addClass('redrow')
                             }
                         }, 1000);
